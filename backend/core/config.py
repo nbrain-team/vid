@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     QDRANT_COLLECTION_NAME: str = "media_embeddings"
     QDRANT_API_KEY: str = ""  # For Qdrant Cloud
     
-    # Object Storage
+    # Object Storage - with defaults that won't crash if not configured
     MINIO_ENDPOINT: str = "localhost:9000"
     MINIO_ACCESS_KEY: str = "minioadmin"
     MINIO_SECRET_KEY: str = "minioadmin"
@@ -38,8 +38,8 @@ class Settings(BaseSettings):
     BLIP_MODEL_NAME: str = "Salesforce/blip-image-captioning-base"
     DEVICE: str = "cpu"
     
-    # CORS
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
+    # CORS - Allow all origins for initial testing
+    BACKEND_CORS_ORIGINS: List[str] = ["*"]
     
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
