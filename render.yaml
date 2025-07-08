@@ -1,0 +1,97 @@
+databases:
+  - name: mediaindex-db
+    databaseName: mediaindex
+    user: mediaindex
+    plan: starter
+
+services:
+  # Backend API Service
+  - type: web
+    name: mediaindex-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mediaindex-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: mediaindex-redis
+          property: connectionString
+      - key: QDRANT_HOST
+        sync: false  # Set in dashboard
+      - key: QDRANT_PORT
+        value: 6333
+      - key: QDRANT_API_KEY
+        sync: false  # Set in dashboard
+      - key: MINIO_ENDPOINT
+        sync: false  # Set in dashboard
+      - key: MINIO_ACCESS_KEY
+        sync: false  # Set in dashboard
+      - key: MINIO_SECRET_KEY
+        sync: false  # Set in dashboard
+      - key: MINIO_BUCKET_NAME
+        value: media-storage
+      - key: MINIO_USE_SSL
+        value: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: BACKEND_CORS_ORIGINS
+        value: '["https://your-frontend-url.onrender.com"]'
+    healthCheckPath: /health
+    plan: starter
+
+  # Frontend Service
+  - type: web
+    name: mediaindex-frontend
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://mediaindex-api.onrender.com
+    plan: starter
+
+  # Celery Worker
+  - type: worker
+    name: mediaindex-worker
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    dockerCommand: celery -A core.celery_app worker --loglevel=info
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mediaindex-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: mediaindex-redis
+          property: connectionString
+      - key: QDRANT_HOST
+        sync: false  # Set in dashboard
+      - key: QDRANT_PORT
+        value: 6333
+      - key: QDRANT_API_KEY
+        sync: false  # Set in dashboard
+      - key: MINIO_ENDPOINT
+        sync: false  # Set in dashboard
+      - key: MINIO_ACCESS_KEY
+        sync: false  # Set in dashboard
+      - key: MINIO_SECRET_KEY
+        sync: false  # Set in dashboard
+      - key: MINIO_BUCKET_NAME
+        value: media-storage
+      - key: MINIO_USE_SSL
+        value: true
+    plan: starter
+
+  # Redis
+  - type: redis
+    name: mediaindex-redis
+    plan: starter
+    maxmemoryPolicy: allkeys-lru 

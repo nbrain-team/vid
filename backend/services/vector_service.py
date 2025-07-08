@@ -10,10 +10,19 @@ logger = logging.getLogger(__name__)
 
 class VectorService:
     def __init__(self):
-        self.client = QdrantClient(
-            host=settings.QDRANT_HOST,
-            port=settings.QDRANT_PORT
-        )
+        # Support both local and cloud Qdrant
+        if settings.QDRANT_API_KEY:
+            # Qdrant Cloud configuration
+            self.client = QdrantClient(
+                url=f"https://{settings.QDRANT_HOST}",
+                api_key=settings.QDRANT_API_KEY,
+            )
+        else:
+            # Local Qdrant configuration
+            self.client = QdrantClient(
+                host=settings.QDRANT_HOST,
+                port=settings.QDRANT_PORT
+            )
         self.collection_name = settings.QDRANT_COLLECTION_NAME
         self._ensure_collection()
     

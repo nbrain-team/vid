@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     QDRANT_HOST: str = "localhost"
     QDRANT_PORT: int = 6333
     QDRANT_COLLECTION_NAME: str = "media_embeddings"
+    QDRANT_API_KEY: str = ""  # For Qdrant Cloud
     
     # Object Storage
     MINIO_ENDPOINT: str = "localhost:9000"
