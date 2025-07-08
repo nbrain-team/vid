@@ -94,4 +94,5 @@ services:
   - type: redis
     name: mediaindex-redis
     plan: starter
-    maxmemoryPolicy: allkeys-lru 
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []  # Allow connections from all Render services 
