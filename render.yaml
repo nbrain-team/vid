@@ -2,7 +2,7 @@ databases:
   - name: mediaindex-db
     databaseName: mediaindex
     user: mediaindex
-    plan: starter
+    plan: free  # Updated from 'starter' - free plan includes 256MB storage
 
 services:
   # Backend API Service
