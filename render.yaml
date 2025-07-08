@@ -40,7 +40,7 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: BACKEND_CORS_ORIGINS
-        value: '["https://your-frontend-url.onrender.com"]'
+        value: '["https://mediaindex-frontend.onrender.com"]'  # Updated to match frontend service name
     healthCheckPath: /health
     plan: starter
 
@@ -52,7 +52,7 @@ services:
     dockerContext: ./frontend
     envVars:
       - key: NEXT_PUBLIC_API_URL
-        value: https://mediaindex-api.onrender.com
+        value: https://mediaindex-api.onrender.com  # Updated to match API service name
     plan: starter
 
   # Celery Worker
